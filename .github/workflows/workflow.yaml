@@ -1,0 +1,39 @@
+name: Branch Flow Pipeline
+
+on:
+  push:
+    branches:
+      - development
+      - master
+
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  development:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/development'
+    runs-on: ubuntu-latest
+    environment: development
+
+    steps:
+      - name: Development stage
+        run: echo "${{ vars.MESSAGE }}"
+
+  pr-to-master:
+    if: github.event_name == 'pull_request' && github.base_ref == 'master'
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: PR to master stage
+        run: echo "${{ vars.MESSAGE }}"
+
+  merged-to-master:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Merged to master stage
+        run: echo "${{ vars.MESSAGE }}"
